@@ -66,7 +66,7 @@ def cluster_analysis():
     madrid_pois_nocinema = madrid_pois.loc[madrid_pois['near_cinema']!=1]
 
     # taking a 20000 sample
-    madrid_pois_nocinema = madrid_pois.sample(n=20000)
+    madrid_pois_nocinema = madrid_pois_nocinema.sample(n=20000)
 
     ## performing the cluster analysis
     
