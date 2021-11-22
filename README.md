@@ -6,3 +6,5 @@ Contains:
 * cluster_analysis.ipynb - Jupyter notebook containing the same code as cluster_analysis, with each code block annotated with explanations. 
 * plot_results.ipynb - Jupyter notebook that reads madrid_poi_clusters.csv, and uses its contents to perform nearest-point interpolation to define the 5 zones of each cluster. It then plots these zones over a map of Madrid. Each code block is also annotated. 
 * 208862-7650164-ocio_salas.csv - Contains the information of the cinemas of the City of Madrid. Obtained from https://datos.madrid.es/portal/site/egob/
+* madrid_poi_clusters.csv - example output of cluster_analysis
+* madrid_poi_clusters.png - example output of plot_results
