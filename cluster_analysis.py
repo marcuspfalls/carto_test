@@ -1,3 +1,5 @@
+### Obtains the data from Google Cloud, discards those that are outside of the Madrid domain and those 150m from a cinema. The cinema data is obtained from the 
+### website of the ayuntamiento of Madrid. 
 
 def cluster_analysis():
 
@@ -11,13 +13,12 @@ def cluster_analysis():
     from sklearn.cluster import SpectralClustering
 
     # obtaining the data
-    # bqclient=bigquery.Client()
-    # table = bigquery.TableReference.from_string('carto-ps-bq-developers.data_test.osm_spain_pois')
-    # rows = bqclient.list_rows(table)
-    # spain_pois = rows.to_dataframe(create_bqstorage_client=True)
+    bqclient=bigquery.Client()
+    table = bigquery.TableReference.from_string('carto-ps-bq-developers.data_test.osm_spain_pois')
+    rows = bqclient.list_rows(table)
+    spain_pois = rows.to_dataframe(create_bqstorage_client=True)
     # spain_pois.to_csv('spain_pois.csv')
-
-    spain_pois=pd.read_csv('spain_pois.csv')
+    # spain_pois=pd.read_csv('spain_pois.csv')
 
     ## Discarding the points outside of the Madrid Region
 
@@ -28,16 +29,13 @@ def cluster_analysis():
     madrid_pois = spain_pois.loc[(spain_pois['lon'] >= min_lon) & (spain_pois['lon'] <= max_lon) &
                                  (spain_pois['lat'] >= min_lat) & (spain_pois['lat'] <= max_lat)]
     madrid_pois=madrid_pois.reset_index()
-    del spain_pois
+    
     ## Cinemas
 
-    # obtained .csv from ayuntamiento of Madrid website - I know this only contains the cinemas of the municipality of
-    # madrid but I was unable to find the equivalent at the regional level
+    # obtained .csv from ayuntamiento of Madrid website 
     madrid_cinemas = pd.read_csv('208862-7650164-ocio_salas.csv',sep=';')
 
-    # defined functions to convert the coordinates to km, using (min_lat,min_lon) as the origin. Did this to allow the 150m
-    # buffer around the cinemas
-    # Used np.vectorize as it's faster than a for loop
+    # defined functions to convert the coordinates to km, using (min_lat,min_lon) as the origin. 
     def lat_to_m(mlat,lat,mlon):
         return geopy.distance.distance((mlon, lat), (mlon, mlat)).km
     def lon_to_m(mlon,lon,mlat):
@@ -70,7 +68,8 @@ def cluster_analysis():
     # taking a 20000 sample
     madrid_pois_nocinema = madrid_pois.sample(n=20000)
 
-    # performing the cluster analysis
+    ## performing the cluster analysis
+    
     X = np.zeros((madrid_pois_nocinema.shape[0],2))
     X[:,0],X[:,1]  = np.array(madrid_pois_nocinema['lat']), np.array(madrid_pois_nocinema['lon'])
     model = SpectralClustering(n_clusters=5)
